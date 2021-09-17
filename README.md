@@ -3,7 +3,7 @@
 mkdir antdesign
 cd antdesign
 
-yarn add webpack  webpack-cli webpack-dev-server  ts-loader  mini-css-extract-plugin  html-webpack-plugin css-loader babel-loader autoprefixer   @types/jest enzyme @types/enzyme classnames @types/classnames  @babel/preset-env @babel/preset-react  @babel/core  @babel/plugin-proposal-class-properties  @babel/plugin-proposal-decorators  less  less-loader postcss-loader  @types/react @types/react-dom  typescript --dev
+yarn add webpack  webpack-cli webpack-dev-server  ts-loader  mini-css-extract-plugin  html-webpack-plugin css-loader babel-loader autoprefixer   @types/jest enzyme @types/enzyme classnames @types/classnames  @babel/preset-env @babel/preset-react  @babel/core  @babel/plugin-proposal-class-properties  @babel/plugin-proposal-decorators  less  less-loader postcss-loader  @types/react @types/react-dom  typescript @types/node --dev
 
 yarn add react  react-dom 
 
@@ -169,7 +169,8 @@ tsconfig.json
     "noImplicitAny": true,
     "target": "es6",
     "lib": ["dom", "es2017"],
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["node"]
   },
   "exclude": ["node_modules", "lib", "es"]
 }
@@ -210,3 +211,59 @@ const Button: React.FC<ButtonProps> = (props:ButtonProps) => {
 export default Button;
 export {ButtonProps}
 ```
+
+## 3.安装Storybook
+### 3.1 安装
+```js
+yarn add @storybook/react  @storybook/addon-actions  @storybook/addon-essentials @storybook/addon-links 
+```
+
+### 3.2 .storybook\main.js
+.storybook\main.js
+```js
+module.exports = {
+  "stories": [
+    "../components/**/*.stories.mdx",
+    "../components/**/*.stories.@(js|jsx|ts|tsx)"
+  ],
+  "addons": [
+    "@storybook/addon-links",
+    "@storybook/addon-essentials"
+  ]
+}
+```
+
+### 3.3 components\Welcome.stories.mdx
+components\Welcome.stories.mdx
+```md
+<Meta title="介绍 /使用说明" />
+
+## 介绍
+这是一个React组件库
+
+## 安装
+
+npm install antdesign --save
+
+## 使用
+
+
+import 'antdesign/dist/antdesign.css';
+import {Button} from 'antdesign';
+
+```
+
+### 3.3 package.json
+package.json
+```diff
+{
+  "scripts": {
+    "build": "webpack",
+    "dev": "webpack serve",
++   "storybook": "start-storybook -p 6006",
++   "build-storybook": "build-storybook"
+  },
+}
+```
+
+
