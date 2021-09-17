@@ -3,7 +3,7 @@
 mkdir antdesign
 cd antdesign
 
-yarn add webpack  webpack-cli webpack-dev-server  ts-loader  mini-css-extract-plugin  html-webpack-plugin css-loader babel-loader autoprefixer   @types/jest enzyme @types/enzyme classnames @types/classnames  @babel/preset-env @babel/preset-react  @babel/core  @babel/plugin-proposal-class-properties  @babel/plugin-proposal-decorators  less  less-loader postcss-loader  @types/react @types/react-dom  typescript @types/node --dev
+yarn add webpack  webpack-cli webpack-dev-server  ts-loader  mini-css-extract-plugin  html-webpack-plugin css-loader babel-loader autoprefixer   @types/jest enzyme @types/enzyme classnames @types/classnames  @babel/preset-env @babel/preset-react  @babel/core  @babel/plugin-proposal-class-properties  @babel/plugin-proposal-decorators  less  less-loader postcss-loader  @types/react @types/react-dom  typescript @types/node @babel/preset-typescript --dev
 
 yarn add react  react-dom 
 
@@ -63,25 +63,9 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.jsx?$/,
+                test: /\.(j|t)sx?$/,
                 exclude: /node_modules/,
-                loader: "babel-loader",
-                options: babelConfig,
-            },
-            {
-                test: /\.tsx?$/,
-                use: [
-                    {
-                        loader: "babel-loader",
-                        options: babelConfig
-                    },
-                    {
-                        loader: "ts-loader",
-                        options: {
-                            transpileOnly: true,
-                        }
-                    },
-                ],
+                loader: "babel-loader"
             },
             {
                 test: /\.css$/,
@@ -148,7 +132,24 @@ module.exports = {
 };
 ```
 
-### 2.2 tsconfig.json
+### 2.2 .babelrc
+.babelrc
+```js
+{
+    "presets": ["@babel/preset-react", "@babel/preset-env","@babel/preset-typescript"],
+    "plugins": [
+        [
+            "@babel/plugin-proposal-decorators",
+            {
+                "legacy": true
+            }
+        ],
+        "@babel/plugin-proposal-class-properties"
+    ]
+}
+```
+
+### 2.3 tsconfig.json
 tsconfig.json
 ```json
 {
@@ -310,4 +311,59 @@ export const Basic = Template.bind({});
 Basic.args = {
   children: '按钮'
 };
+```
+
+## 5.单元测试
+- [configuration](https://jestjs.io/docs/configuration)
+- [code-transformation](https://jestjs.io/docs/code-transformation)
+
+### 5.1 安装依赖
+```js
+yarn add @wojtekmaj/enzyme-adapter-react-17
+```
+
+### 5.2 package.json
+```diff
+{
+  "scripts": {
+    "build": "webpack",
+    "dev": "webpack serve",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook",
++   "test": "jest --config .jest.js"
+  }
+}
+```
+
+### 5.3 .jest.js
+.jest.js
+```js
+module.exports = {
+    verbose: true,
+    testEnvironment: 'jsdom',
+    setupFiles: ['./tests/setup.js']
+};
+```
+
+### 5.4 tests\setup.js
+tests\setup.js
+```js
+const React = require('react');
+const Enzyme = require('enzyme');
+
+const Adapter = require('@wojtekmaj/enzyme-adapter-react-17')
+Enzyme.configure({ adapter: new Adapter() });
+```
+
+### 5.5 index.test.tsx
+components\button\__tests__\index.test.tsx
+```js
+import React from 'react';
+import { mount } from 'enzyme';
+import Button from '..';
+describe('Button', () => {
+    it('mount correctly', () => {
+        expect(() => mount(<Button>Follow</Button>)).not.toThrow();
+    });
+})
 ```

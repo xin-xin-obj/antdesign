@@ -48,25 +48,9 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.jsx?$/,
+                test: /\.(j|t)sx?$/,
                 exclude: /node_modules/,
-                loader: "babel-loader",
-                options: babelConfig,
-            },
-            {
-                test: /\.tsx?$/,
-                use: [
-                    {
-                        loader: "babel-loader",
-                        options: babelConfig
-                    },
-                    {
-                        loader: "ts-loader",
-                        options: {
-                            transpileOnly: true,
-                        }
-                    },
-                ],
+                loader: "babel-loader"
             },
             {
                 test: /\.css$/,
