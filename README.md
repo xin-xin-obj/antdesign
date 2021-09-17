@@ -205,7 +205,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   
 }
 const Button: React.FC<ButtonProps> = (props:ButtonProps) => {
-	return <button>{props.children}</button>;
+	let {children,...rest}=props;
+	return <button {...rest}>{children}</button>;
 }
 
 export default Button;
@@ -267,3 +268,46 @@ package.json
 ```
 
 
+## 4.编写Story
+- [argtypes](https://storybook.js.org/docs/react/api/argtypes)
+
+### 4.1 Welcome.stories.mdx
+components\Welcome.stories.mdx
+```mdx
+<Meta title="Introduction/Welcome" />
+
+## 介绍
+这是一个React组件库
+
+## 安装
+
+npm install antdesign --save
+
+## 使用
+
+import 'antdesign/dist/antdesign.css';
+import {Button} from 'antdesign';
+
+```
+
+### 4.2 button.stories.tsx
+components\button\button.stories.tsx
+```js
+import React from "react";
+import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { action } from "@storybook/addon-actions";
+
+import Button from ".";
+
+export default {
+  title: "Component/Button",
+  component: Button
+} as ComponentMeta<typeof Button>;
+
+const Template: ComponentStory<typeof Button> = (args) => <Button onClick={action("clicked")} {...args} />;
+
+export const Basic = Template.bind({});
+Basic.args = {
+  children: '按钮'
+};
+```
