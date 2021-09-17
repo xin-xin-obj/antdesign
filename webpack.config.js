@@ -1,18 +1,3 @@
-## 1.创建项目
-```js
-mkdir antdesign
-cd antdesign
-
-yarn add webpack  webpack-cli webpack-dev-server  ts-loader  mini-css-extract-plugin  html-webpack-plugin css-loader babel-loader autoprefixer   @types/jest enzyme @types/enzyme classnames @types/classnames  @babel/preset-env @babel/preset-react  @babel/core  @babel/plugin-proposal-class-properties  @babel/plugin-proposal-decorators  less  less-loader postcss-loader  @types/react @types/react-dom  typescript --dev
-
-yarn add react  react-dom 
-
-```
-
-## 2.配置项目
-### 2.1 webpack.config.js
-webpack.config.js
-```js
 const path = require("path");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const cwd = process.cwd();
@@ -146,67 +131,5 @@ module.exports = {
         }),
     ]
 };
-```
 
-### 2.2 tsconfig.json
-tsconfig.json
-```json
-{
-  "compilerOptions": {
-    "baseUrl": "./",
-    "paths": {
-      "antdesign": ["components/index.tsx"],
-      "antdesign/es/*": ["components/*"]
-    },
-    "strictNullChecks": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "jsx": "preserve",
-    "noUnusedParameters": true,
-    "noUnusedLocals": true,
-    "noImplicitAny": true,
-    "target": "es6",
-    "lib": ["dom", "es2017"],
-    "skipLibCheck": true
-  },
-  "exclude": ["node_modules", "lib", "es"]
-}
-```
 
-### 2.3 index.js
-index.js
-```js
-module.exports = require('./components');
-```
-
-### 2.4 components\index.tsx
-components\index.tsx
-```js
-export type { ButtonProps } from './button';
-export { default as Button } from './button';
-```
-
-### 2.5 button\index.tsx
-components\button\index.tsx
-```js
-import Button from './button';
-export type { ButtonProps} from './button';
-export default Button;
-```
-
-### 2.6 button\button.tsx
-components\button\button.tsx
-```js
-import React, { ButtonHTMLAttributes } from "react";
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  
-}
-const Button: React.FC<ButtonProps> = (props:ButtonProps) => {
-	return <button>{props.children}</button>;
-}
-
-export default Button;
-export {ButtonProps}
-```
