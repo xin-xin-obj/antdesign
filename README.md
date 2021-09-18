@@ -751,3 +751,32 @@ yarn add husky
 ```
 
 ### 10.1 pre-commit
+
+```js
+npx husky add .husky/pre-commit "npx lint-staged"
+```
+
+.lintstagedrc
+```js
+{
+    "*.(js|ts|jsx|tsx)": "npm run lint"
+}
+```
+
+### 10.2 commit-msg
+```js
+yarn add commitizen cz-customizable @commitlint/cli @commitlint/config-conventional
+```
+
+
+
+
+
+
+
+
+
+
+
+##
+- [在代码提交之前使用esLint校验代码](https://blog.csdn.net/visionke/article/details/92817269)

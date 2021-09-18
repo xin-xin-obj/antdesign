@@ -1,6 +1,4 @@
-#!/usr/bin/bash
-echo 1
-echo  "$(dirname "$0")/_/husky.sh"
-. "$(dirname "$0")/_/husky.sh"
+#!/bin/sh
 
 
+npx lint-staged
