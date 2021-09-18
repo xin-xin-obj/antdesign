@@ -163,17 +163,12 @@ tsconfig.json
 ```json
 {
   "compilerOptions": {
-    "baseUrl": "./",
-    "paths": {
-      "antdesign": ["components/index.tsx"],
-      "antdesign/es/*": ["components/*"]
-    },
     "strictNullChecks": true,
     "module": "esnext",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "jsx": "preserve",
+    "jsx": "react",
     "noUnusedParameters": true,
     "noUnusedLocals": true,
     "noImplicitAny": true,
@@ -201,7 +196,7 @@ components\index.tsx
 ```js
 import Button, { ButtonProps } from './button';
 export default Button;
-export { ButtonProps };
+export type { ButtonProps };
 ```
 
 ### 2.5 button\index.tsx
@@ -790,14 +785,433 @@ module.exports = {
 npx husky add .husky/pre-push "npm run test"
 
 
+## 11 布署
+### 11.1 babel.config.js
+babel.config.js
+```js
+module.exports = {
+  presets: [
+    '@babel/preset-react',
+    [
+      '@babel/preset-env',
+      {
+        modules: 'auto',
+        targets: {
+          browsers: ['last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 11'],
+        },
+      },
+    ],
+  ],
+  plugins: [
+    [
+      '@babel/plugin-transform-typescript',
+      {
+        isTSX: true,
+      },
+    ],
+    ['@babel/plugin-transform-runtime'],
+  ],
+};
+
+```
+
+### 11.2 .eslintignore
+.eslintignore
+```diff
+components/**/e2e/*
+components/**/unit/*
+components/**/*.stories.*
++lib
++es
+```
+
+### 11.3 package.json
+package.json
+```diff
+{
+  "name": "antdesign",
+  "version": "1.0.0",
+  "description": "React组件的企业级UI设计",
++ "main": "lib/index.js",
++ "module": "es/index.js",
++ "unpkg": "dist/antd.js",
++ "typings": "lib/index.d.ts",
+  "scripts": {
+    "dev": "webpack serve",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook",
+    "test:unit": "jest --config unit.jest.js",
+    "test:e2e": "jest --config e2e.jest.js",
+    "test": "npm run test:unit && npm run test:e2e",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx components/",
+    "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx components/",
+    "prepare": "husky install",
++   "commit": "cz",
++   "compile": "rimraf es lib && gulp compile",
++   "dist": "rimraf dist && webpack",
++   "build":"npm run dist && npm run compile",
++   "prepublishOnly": "npm run test && npm run lint && npm run build"
+  },
++ "homepage": "https://github.com/zhangrenyang/antdesign",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhangrenyang/antdesign.git"
+  },
++ "files": [
++   "dist",
++   "es",
++   "lib"
++ ],
+  "keywords": [
+    "ant",
+    "component",
+    "components",
+    "design",
+    "framework",
+    "frontend",
+    "react",
+    "react-component",
+    "ui"
+  ],
+  "author": "zhangrenyang",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jest-environment-puppeteer": "^4.4.1",
+    "@types/puppeteer": "^5.4.4",
+    "jest-puppeteer": "^5.0.4",
+    "@babel/core": "^7.15.5",
+    "@babel/plugin-proposal-class-properties": "^7.14.5",
+    "@babel/plugin-proposal-decorators": "^7.15.4",
+    "@babel/plugin-transform-runtime": "^7.15.0",
+    "@babel/preset-env": "^7.15.6",
+    "@babel/preset-react": "^7.14.5",
+    "@babel/preset-typescript": "^7.15.0",
+    "@babel/runtime": "^7.15.4",
+    "@commitlint/cli": "^13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
+    "@storybook/addon-actions": "^6.3.8",
+    "@storybook/addon-essentials": "^6.3.8",
+    "@storybook/addon-links": "^6.3.8",
+    "@storybook/preset-create-react-app": "^3.2.0",
+    "@storybook/react": "^6.3.8",
+    "@types/classnames": "^2.3.1",
+    "@types/enzyme": "^3.10.9",
+    "@types/jest": "^27.0.1",
+    "@types/jest-image-snapshot": "^4.3.1",
+    "@types/node": "^16.9.2",
+    "@types/react": "^17.0.21",
+    "@types/react-dom": "^17.0.9",
+    "@typescript-eslint/parser": "^4.31.1",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
+    "autoprefixer": "^10.3.4",
+    "babel-loader": "^8.2.2",
+    "commitizen": "^4.2.4",
+    "css-loader": "^6.2.0",
+    "cz-customizable": "^6.3.0",
+    "enzyme": "^3.11.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.25.2",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-cli": "^2.3.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "html-webpack-plugin": "^5.3.2",
+    "husky": "^7.0.2",
+    "jest": "^27.2.0",
+    "jest-environment-puppeteer": "^5.0.4",
+    "jest-environment-puppeteer-jsdom": "^4.3.1",
+    "jest-image-snapshot": "^4.5.1",
+    "less": "^4.1.1",
+    "less-loader": "^10.0.1",
+    "merge2": "^1.4.1",
+    "mini-css-extract-plugin": "^2.3.0",
+    "postcss-loader": "^6.1.1",
+    "prettier": "^2.4.1",
+    "pretty-quick": "^3.1.1",
+    "puppeteer": "^10.2.0",
+    "rimraf": "^3.0.2",
+    "through2": "^4.0.2",
+    "ts-loader": "^9.2.5",
+    "typescript": "^4.4.3",
+    "webpack": "^5.53.0",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.2.1"
+  },
+  "peerDependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  }
+}
+
+```
+
+### 11.4 .storybook\main.js
+.storybook\main.js
+```diff
+module.exports = {
+  "stories": [
+    "../components/Introduction.stories.mdx",
+    "../components/Install.stories.mdx",
+    "../components/Components.stories.mdx",
+    "../components/**/*.stories.mdx",
+    "../components/**/*.stories.@(js|jsx|ts|tsx)"
+  ],
+  "addons": [
+    "@storybook/addon-links",
+    "@storybook/addon-essentials"
+  ]
+}
+```
+
+### 11.5 .travis.yml
+.travis.yml
+```yml
+language: node_js
+node_js:
+  - "stable"
+cache:
+  directories:
+  - node_modules
+env:
+  - CI=true
+script:
+  - npm run build-storybook
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  local_dir: storybook-static
+  on:
+    branch: master
+```
+
+### 11.6 babel.config.js
+babel.config.js
+```js
+module.exports = {
+  presets: [
+    '@babel/preset-react',
+    [
+      '@babel/preset-env',
+      {
+        modules: 'auto',
+        targets: {
+          browsers: ['last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 11'],
+        },
+      },
+    ],
+  ],
+  plugins: [
+    [
+      '@babel/plugin-transform-typescript',
+      {
+        isTSX: true,
+      },
+    ],
+    ['@babel/plugin-transform-runtime'],
+  ],
+};
+
+```
+
+### 11.7 gulpfile.js
+gulpfile.js
+```js
+module.exports = {
+  presets: [
+    '@babel/preset-react',
+    [
+      '@babel/preset-env',
+      {
+        modules: 'auto',
+        targets: {
+          browsers: ['last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 11'],
+        },
+      },
+    ],
+  ],
+  plugins: [
+    [
+      '@babel/plugin-transform-typescript',
+      {
+        isTSX: true,
+      },
+    ],
+    ['@babel/plugin-transform-runtime'],
+  ],
+};
+```
+
+### 11.8 components\Components.stories.mdx
+components\Components.stories.mdx
+```js
+<Meta title="开始/组件总览" />
+
+## 组件总览
+antd 是基于 Ant Design 设计体系的 React UI 组件库，主要用于研发企业级中后台产品。
+
+## 通用
+- Button 按钮
+- Icon 图标
+- Typography 排版
+
+## 布局
+- Divider 分割线
+- Grid 栅格
+- Layout 布局
+- Space 间距
+
+## 导航
+- Affix 固钉
+- Breadcrumb 面包屑
+- Dropdown 下拉菜单
+- Menu 导航菜单
+- Pagination 分页
+- PageHeader 页头
+- Steps 步骤条
+
+## 数据录入
+- AutoComplete 自动完成
+- Checkbox 多选框
+- Cascader 级联选择
+- DatePicker 日期选择框
+- Form 表单
+- InputNumber 数字输入框
+- Input 输入框
+- Mentions 提及
+- Rate 评分
+- Radio 单选框
+- Switch 开关
+- Slider 滑动输入条
+- Select 选择器
+- TreeSelect 树选择
+- Transfer 穿梭框
+- TimePicker 时间选择框
+- Upload 上传
+
+## 数据展示
+- Avatar 头像
+- Badge 徽标数
+- Comment 评论
+- Collapse 折叠面板
+- Carousel 走马灯
+- Card 卡片
+- Calendar 日历
+- Descriptions 描述列表
+- Empty 空状态
+- Image 图片
+- List 列表
+- Popover 气泡卡片
+- Statistic 统计数值
+- Tree 树形控件
+- Tooltip 文字提示
+- Timeline 时间轴
+- Tag 标签
+- Tabs 标签页
+- Table 表格
+
+
+## 反馈
+- Alert 警告提示
+- Drawer 抽屉
+- Modal 对话框
+- Message 全局提示
+- Notification 通知提醒框
+- Progress 进度条
+- Popconfirm 气泡确认框
+- Result 结果
+- Spin 加载中
+- Skeleton 骨架屏
+
+## 其他
+- Anchor 锚点
+- BackTop 回到顶部
+- ConfigProvider 全局化配置
+
+```
+
+### 11.9 components\index.tsx
+components\index.tsx
+```js
+export { default as Button } from './button';
+```
+
+### 11.10 components\Install.stories.mdx
+components\Install.stories.mdx
+```js
+<Meta title="开始/安装使用" />
+
+## 安装
+使用 npm 或 yarn 安装#
+我们推荐使用 npm 或 yarn 的方式进行开发，不仅可在开发环境轻松调试，也可放心地在生产环境打包部署使用，享受整个生态圈和工具链带来的诸多好处。
+
+
+npm install antdesign --save
 
 
 
+yarn add antd
 
 
+## 浏览器引入
+在浏览器中使用 script 和 link 标签直接引入文件，并使用全局变量 antdesign
+我们在 npm 发布包内的 antdesign/dist 目录下提供了 antdesign.js 和 antdesign.css
+
+## 示例
 
 
+import { Button } from 'antdesign';
+ReactDOM.render(<Button>按钮</Button>, mountNode);
+
+
+引入样式：
+
+import 'antd/dist/antdesign.css';
+
+```
+
+### 11.12  components\Introduction.stories.mdx
+components\Introduction.stories.mdx
+```js
+<Meta title="开始/介绍" />
+
+## Ant Design of React
+antd 是基于 Ant Design 设计体系的 React UI 组件库，主要用于研发企业级中后台产品。
+```
+
+### 11.13 umd\index.html
+umd\index.html
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="antdesign.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script>
+        ReactDOM.render(React.createElement(antdesign.Button,null,'按钮'),document.getElementById('root'));
+    </script>
+</body>
+</html>
+```
 
 
 ##
 - [在代码提交之前使用esLint校验代码](https://blog.csdn.net/visionke/article/details/92817269)
+- [Leveraging Type-Only imports and exports with TypeScript 3.8](https://medium.com/javascript-in-plain-english/leveraging-type-only-imports-and-exports-with-typescript-3-8-5c1be8bd17fb)
+- [Type-Only Imports and Export](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-8.html)
+- [ESLint 配置](https://www.jianshu.com/p/bf0ffe8e615a)
