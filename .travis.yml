@@ -14,18 +14,17 @@ script:
   - npm version patch
   - npm run build
 deploy:
-- provider: pages
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN
-  local_dir: storybook-static
-  on:
-    branch: master
-deploy:    
-- provider: npm
-  email: zhang_renyang@126.com  
-  api_key: "$NPM_TOKEN"
-  skip_cleanup: true
-  on:
-    branch: master
+  - provider: pages
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    local_dir: storybook-static
+    on:
+      branch: master  
+  - provider: npm
+    email: zhang_renyang@126.com  
+    api_key: "$NPM_TOKEN"
+    skip_cleanup: true
+    on:
+      branch: master
   
   
