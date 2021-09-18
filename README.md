@@ -544,3 +544,46 @@ tests\index.html
   </body>
 </html>
 ```
+
+## 7.eslint
+### 7.1 安装
+```js
+yarn add @typescript-eslint/parser eslint eslint-plugin-import eslint-plugin-react eslint-plugin-react-hooks and eslint-plugin-jsx-a11y eslint-config-airbnb
+```
+
+### 7.2 .eslintrc.js
+.eslintrc.js
+
+```js
+module.exports = {
+  extends: [
+    'airbnb'
+  ],
+  env: {
+    browser: true,
+    node: true,
+    jasmine: true,
+    jest: true,
+    es6: true,
+  },
+  parser: '@typescript-eslint/parser'
+};
+```
+
+### 7.3 package.json
+package.json
+
+```diff
+{
+ "scripts": {
+    "build": "webpack",
+    "dev": "webpack serve",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook",
+    "test:unit": "jest --config unit.jest.js",
+    "test:e2e": "jest --config e2e.jest.js",
+    "test": "npm run test:unit && npm run test:e2e",
++   "lint": "eslint --ext .js,.jsx,.ts,.tsx components/"
+  },
+}
+```
