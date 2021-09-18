@@ -602,3 +602,60 @@ components/**/e2e/*
 components/**/unit/*
 components/**/*.stories.*
 ```
+
+
+## 8.prettier
+### 8.1 安装依赖
+```js
+yarn add prettier eslint-config-prettier eslint-plugin-prettier
+```
+
+### 8.2 .eslintrc.js
+.eslintrc.js
+```diff
+module.exports = {
+  parser: '@typescript-eslint/parser',
++ extends: ['airbnb', 'prettier'],
+  env: {
+    browser: true,
+    node: true,
+    jasmine: true,
+    jest: true,
+    es6: true,
+  },
++ plugins: ['prettier'],
+  rules: {
++   'prettier/prettier': ['error', { endOfLine: 'auto' }],
+    'import/extensions': 0,
+    'import/no-unresolved': 0,
+    'react/jsx-filename-extension': 0,
+    // https://github.com/typescript-eslint/typescript-eslint/issues/2540#issuecomment-692866111
+    'no-use-before-define': 0,
+  },
+};
+```
+
+### 8.3 .prettierrc
+.prettierrc
+```json
+{
+  "singleQuote": true
+}
+```
+
+### 8.4 button\index.tsx
+components\button\index.tsx
+```diff
++            const title = "hello";
+```
+
+### 8.5 .vscode\settings.json
+.vscode\settings.json
+```json
+{
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "files.autoSave": "afterDelay"
+}
+```
