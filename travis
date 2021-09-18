@@ -10,9 +10,16 @@ install:
 - yarn config set registry https://registry.npm.taobao.org  
 - yarn install
 script:
+  - npm run build-storybook
   - npm version patch
   - npm run build
 deploy:
+  - provider: pages
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    local_dir: storybook-static
+    on:
+      branch: master  
   - provider: npm
     email: zhang_renyang@126.com  
     api_key: "$NPM_TOKEN"

@@ -68,3 +68,6 @@ __image_snapshots__/
 storybook-static
 
 sh.exe.stackdump
+/snapshots
+/diffSnapshots
+
