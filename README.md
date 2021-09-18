@@ -3,7 +3,7 @@
 mkdir antdesign
 cd antdesign
 
-yarn add webpack  webpack-cli webpack-dev-server  ts-loader  mini-css-extract-plugin  html-webpack-plugin css-loader babel-loader autoprefixer   @types/jest enzyme @types/enzyme classnames @types/classnames  @babel/preset-env @babel/preset-react  @babel/core  @babel/plugin-proposal-class-properties  @babel/plugin-proposal-decorators  less  less-loader postcss-loader  @types/react @types/react-dom  typescript @types/node @babel/preset-typescript --dev
+yarn add webpack  webpack-cli webpack-dev-server  ts-loader  mini-css-extract-plugin  html-webpack-plugin css-loader babel-loader autoprefixer   @types/jest enzyme @types/enzyme classnames @types/classnames  @babel/preset-env @babel/preset-react  @babel/core  @babel/plugin-proposal-class-properties  @babel/plugin-proposal-decorators  less  less-loader postcss-loader  @types/react @types/react-dom  typescript @types/node @babel/preset-typescript @babel/plugin-transform-runtime @babel/runtime --dev
 
 yarn add react  react-dom 
 
@@ -144,7 +144,8 @@ module.exports = {
                 "legacy": true
             }
         ],
-        "@babel/plugin-proposal-class-properties"
+        "@babel/plugin-proposal-class-properties",
+        "@babel/plugin-transform-runtime"
     ]
 }
 ```
@@ -186,8 +187,9 @@ module.exports = require('./components');
 ### 2.4 components\index.tsx
 components\index.tsx
 ```js
-export type { ButtonProps } from './button';
-export { default as Button } from './button';
+import Button,{ButtonProps} from './button';
+export default Button;
+export { ButtonProps}
 ```
 
 ### 2.5 button\index.tsx
@@ -237,21 +239,90 @@ module.exports = {
 
 ### 3.3 components\Welcome.stories.mdx
 components\Welcome.stories.mdx
+
 ```md
-<Meta title="介绍 /使用说明" />
+<Meta title="组件总览/介绍" />
 
-## 介绍
-这是一个React组件库
+## 组件总览
+antd 为 Web 应用提供了丰富的基础 UI 组件，我们还将持续探索企业级应用的最佳 UI 实践
 
-## 安装
+## 通用
+- Button 按钮
+- Icon 图标
+- Typography 排版
 
-npm install antdesign --save
+## 布局
+- Divider 分割线
+- Grid 栅格
+- Layout 布局
+- Space 间距
 
-## 使用
+## 导航
+- Affix 固钉
+- Breadcrumb 面包屑
+- Dropdown 下拉菜单
+- Menu 导航菜单
+- Pagination 分页
+- PageHeader 页头
+- Steps 步骤条
+
+## 数据录入
+- AutoComplete 自动完成
+- Checkbox 多选框
+- Cascader 级联选择
+- DatePicker 日期选择框
+- Form 表单
+- InputNumber 数字输入框
+- Input 输入框
+- Mentions 提及
+- Rate 评分
+- Radio 单选框
+- Switch 开关
+- Slider 滑动输入条
+- Select 选择器
+- TreeSelect 树选择
+- Transfer 穿梭框
+- TimePicker 时间选择框
+- Upload 上传
+
+## 数据展示
+- Avatar 头像
+- Badge 徽标数
+- Comment 评论
+- Collapse 折叠面板
+- Carousel 走马灯
+- Card 卡片
+- Calendar 日历
+- Descriptions 描述列表
+- Empty 空状态
+- Image 图片
+- List 列表
+- Popover 气泡卡片
+- Statistic 统计数值
+- Tree 树形控件
+- Tooltip 文字提示
+- Timeline 时间轴
+- Tag 标签
+- Tabs 标签页
+- Table 表格
 
 
-import 'antdesign/dist/antdesign.css';
-import {Button} from 'antdesign';
+## 反馈
+- Alert 警告提示
+- Drawer 抽屉
+- Modal 对话框
+- Message 全局提示
+- Notification 通知提醒框
+- Progress 进度条
+- Popconfirm 气泡确认框
+- Result 结果
+- Spin 加载中
+- Skeleton 骨架屏
+
+## 其他
+- Anchor 锚点
+- BackTop 回到顶部
+- ConfigProvider 全局化配置
 
 ```
 
@@ -301,7 +372,7 @@ import { action } from "@storybook/addon-actions";
 import Button from ".";
 
 export default {
-  title: "Component/Button",
+  title: "通用/Button按钮",
   component: Button
 } as ComponentMeta<typeof Button>;
 
@@ -366,4 +437,110 @@ describe('Button', () => {
         expect(() => mount(<Button>Follow</Button>)).not.toThrow();
     });
 })
+```
+
+## 6.集成测试和代码覆盖率
+### 6.1 安装依赖
+```js
+yarn add puppeteer jest-environment-puppeteer @types/puppeteer @types/jest-environment-puppeteer jest-puppeteer  jest-image-snapshot @types/jest-image-snapshot @babel/runtime --dev
+```
+
+### 6.2 e2e.jest.js
+```js
+module.exports = {
+    verbose: true,
+    testEnvironment: 'jest-environment-puppeteer',
+    setupFiles: ['./tests/setup.js'],
+    preset: 'jest-puppeteer',
+    testMatch:["**/e2e/**/*.(spec|test).(j|t)sx"]
+};
+```
+
+### 6.3 unit.jest.js
+unit.jest.js
+```js
+module.exports = {
+    verbose: true,
+    testEnvironment: 'jsdom',
+    setupFiles: ['./tests/setup.js'],
+    testMatch:["**/unit/**/*.(spec|test).(js|ts|jsx|tsx)"],
+    collectCoverage:true,
+    collectCoverageFrom:[
+    'components/**/*.(js|ts|jsx|tsx)',
+    '!components/**/*.stories.(js|ts|jsx|tsx)',
+    "!components/**/*.(spec|test).(js|ts|jsx|tsx)"
+    ]
+};
+```
+
+### 6.4 jest-puppeteer.config.js
+jest-puppeteer.config.js
+```js
+module.exports = {
+    launch: {
+        dumpio: true,
+        headless: process.env.HEADLESS !== 'false'
+    },
+    browserContext: 'default'
+}
+```
+
+### 6.5 unit\index.test.tsx
+components\button\unit\index.test.tsx
+```js
+import React from 'react';
+import { mount } from 'enzyme';
+import Button from '..';
+describe('Button', () => {
+    it('mount correctly', () => {
+        expect(() => mount(<Button>Follow</Button>)).not.toThrow();
+    });
+})
+```
+
+### 6.6 snapshot.spec.tsx
+components\button\e2e\snapshot.spec.tsx
+```js
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import Button from '..';
+import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
+const toMatchSnapshot = configureToMatchImageSnapshot({
+  customSnapshotsDir: `${process.cwd()}/snapshots`,
+  customDiffDir: `${process.cwd()}/diffSnapshots`,
+});
+expect.extend({ toMatchSnapshot });
+describe('Button snapshot', () => {
+  it('screenshot should correct', async () => {
+    await jestPuppeteer.resetPage();
+    await page.goto(`file://${process.cwd()}/tests/index.html`);
+    const html = ReactDOMServer.renderToString(<Button>按钮</Button>);
+    await page.evaluate(innerHTML => {
+      document.querySelector('#root')!.innerHTML = innerHTML;
+    }, html);
+    const screenshot = await page.screenshot();
+    expect(screenshot).toMatchSnapshot();
+  })
+});
+```
+
+### 6.7 tests\index.html
+tests\index.html
+```js
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Amazing Antd</title>
+    <style>
+      body {
+        border: 5px solid #1890ff;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
 ```

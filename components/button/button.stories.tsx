@@ -5,7 +5,7 @@ import { action } from "@storybook/addon-actions";
 import Button from ".";
 
 export default {
-  title: "Component/Button",
+  title: "通用/Button按钮",
   component: Button
 } as ComponentMeta<typeof Button>;
 
