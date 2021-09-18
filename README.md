@@ -768,6 +768,27 @@ npx husky add .husky/pre-commit "npx lint-staged"
 yarn add commitizen cz-customizable @commitlint/cli @commitlint/config-conventional
 ```
 
+.cz-config.js
+```js
+module.exports = {
+  types: [
+    { value: "feat", name: "feat:一个新特性" },
+    { value: "fix", name: "fix:修复BUG" },
+  ],
+  scopes: [{ name: "sale" }, { name: "user" }, { name: "admin" }],
+};
+```
+
+commitlint.config.js
+```js
+module.exports = {
+  extends: ['@commitlint/config-conventional'],
+};
+```
+
+### 10.2 pre-push
+npx husky add .husky/pre-push "npm run test"
+
 
 
 
