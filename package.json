@@ -1,5 +1,5 @@
 {
-  "name": "antdesign",
+  "name": "@zhangrenyangcomponent/antdesign",
   "version": "1.0.1",
   "description": "React组件的企业级UI设计",
   "main": "lib/index.js",
@@ -21,6 +21,10 @@
     "dist": "rimraf dist && webpack",
     "build": "npm run dist && npm run compile",
     "prepublishOnly": "npm run test && npm run lint && npm run build"
+  },
+  "publishConfig": {
+      "access": "public",
+      "registry": "http://registry.npmjs.org"
   },
   "homepage": "https://zhangrenyang.github.io/antdesign",
   "repository": {
