@@ -203,17 +203,16 @@ export default Button;
 ### 2.6 button\button.tsx
 components\button\button.tsx
 ```js
-import React, { ButtonHTMLAttributes } from "react";
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  
-}
-const Button: React.FC<ButtonProps> = (props:ButtonProps) => {
-	let {children,...rest}=props;
-	return <button {...rest}>{children}</button>;
-}
+import React, { ButtonHTMLAttributes } from 'react';
+
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
+const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
+  const { children } = props;
+  return <button type="button">{children}</button>;
+};
 
 export default Button;
-export {ButtonProps}
+export { ButtonProps };
 ```
 
 ## 3.安装Storybook
@@ -556,6 +555,7 @@ yarn add @typescript-eslint/parser eslint eslint-plugin-import eslint-plugin-rea
 
 ```js
 module.exports = {
+  parser: '@typescript-eslint/parser',
   extends: [
     'airbnb'
   ],
@@ -566,7 +566,13 @@ module.exports = {
     jest: true,
     es6: true,
   },
-  parser: '@typescript-eslint/parser'
+  rules:{
+    'import/extensions': 0,
+    'import/no-unresolved': 0,
+    'react/jsx-filename-extension': 0,
+    // https://github.com/typescript-eslint/typescript-eslint/issues/2540#issuecomment-692866111
+    'no-use-before-define': 0
+  }
 };
 ```
 
@@ -583,7 +589,16 @@ package.json
     "test:unit": "jest --config unit.jest.js",
     "test:e2e": "jest --config e2e.jest.js",
     "test": "npm run test:unit && npm run test:e2e",
-+   "lint": "eslint --ext .js,.jsx,.ts,.tsx components/"
++   "lint": "eslint --ext .js,.jsx,.ts,.tsx components/",
++   "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx components/"
   },
 }
+```
+
+### 7.4 .eslintignore
+.eslintignore
+```js
+components/**/e2e/*
+components/**/unit/*
+components/**/*.stories.*
 ```

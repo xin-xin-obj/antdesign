@@ -1,4 +1,5 @@
 module.exports = {
+  parser: '@typescript-eslint/parser',
   extends: [
     'airbnb'
   ],
@@ -9,5 +10,11 @@ module.exports = {
     jest: true,
     es6: true,
   },
-  parser: '@typescript-eslint/parser'
+  rules:{
+    'import/extensions': 0,
+    'import/no-unresolved': 0,
+    'react/jsx-filename-extension': 0,
+    // https://github.com/typescript-eslint/typescript-eslint/issues/2540#issuecomment-692866111
+    'no-use-before-define': 0
+  }
 };
