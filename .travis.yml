@@ -10,11 +10,19 @@ install:
 - npm install --registry=https://registry.npm.taobao.org
 script:
   - npm run build-storybook
+  - npm version
+  - npm build
 deploy:
-  provider: pages
+- provider: pages
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
   local_dir: storybook-static
+  on:
+    branch: master
+- provider: npm
+  email: zhang_renyang@126.com  
+  api_key: "$NPM_TOKEN"
+  skip_cleanup: true
   on:
     branch: master
   
