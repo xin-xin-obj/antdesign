@@ -20,6 +20,7 @@ deploy:
   local_dir: storybook-static
   on:
     branch: master
+deploy:    
 - provider: npm
   email: zhang_renyang@126.com  
   api_key: "$NPM_TOKEN"
